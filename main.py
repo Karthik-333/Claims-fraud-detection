@@ -22,9 +22,7 @@ app.add_middleware(
 # --------------------
 # Load ML Model
 # --------------------
-MODEL_PATH = Path(
-    r"C:\Users\AK\OneDrive\Desktop\FraudDetection\fraudradar-app\fraudradar-app-main\backend-app-main\model\trained_model.joblib"
-)
+MODEL_PATH = Path("model/trained_model.joblib")
 print(">>> Loading model from:", MODEL_PATH)
 
 try:
@@ -62,7 +60,7 @@ def predict_fraud(data: ClaimData):
         )
 
     X_input = pd.DataFrame([data.features], columns=feature_columns)
-    prob = model.predict_proba(X_input)[0][1]
+    prob = float(model.predict_proba(X_input)[0][1])
     prediction_int = int(prob >= threshold)
     prediction_str = "Fraudulent" if prediction_int == 1 else "Non-Fraudulent"
     risk_factors = ["Unusual billing patterns"] if prob > 0.8 else []
@@ -97,7 +95,7 @@ async def predict_batch(file: UploadFile = File(...)):
             results.append({
                 "provider_id": str(df.index[i]),
                 "prediction": "Fraud" if preds[i] == 1 else "Not Fraud",
-                "probability": float(prob),
+                "probability": round(float(prob), 4),
                 "threshold": threshold,
                 "risk_factors": []
             })

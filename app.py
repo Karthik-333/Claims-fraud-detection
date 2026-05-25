@@ -5,6 +5,15 @@ import plotly.express as px
 from pathlib import Path
 
 # -------------------
+# Streamlit Config (must be first st command)
+# -------------------
+st.set_page_config(
+    page_title="Healthcare Fraud Detection",
+    page_icon="🚨",
+    layout="wide",
+)
+
+# -------------------
 # Load Model
 # -------------------
 MODEL_PATH = Path("model/trained_model.joblib")
@@ -95,13 +104,8 @@ def fraud_heatbar(prob_percent: int):
     )
 
 # -------------------
-# Streamlit Config + Styling
+# Styling
 # -------------------
-st.set_page_config(
-    page_title="Healthcare Fraud Detection",
-    page_icon="🚨",
-    layout="wide",
-)
 
 st.markdown("""
 <style>
@@ -171,7 +175,7 @@ with tab1:
         results = predict_batch(df)
 
         st.subheader("📊 Fraud Detection Results")
-        st.dataframe(results, use_container_width=True)
+        st.dataframe(results, width="stretch")
 
         # Interactive Fraud Distribution
         fraud_counts = results["prediction"].value_counts().reset_index()
@@ -186,7 +190,7 @@ with tab1:
             hole=0.5,
             title="Fraud vs Non-Fraud Distribution"
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         st.download_button(
             label="⬇️ Download Predictions as CSV",
